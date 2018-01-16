@@ -85,14 +85,14 @@ func param(key string, value interface{}) func(url.Values) {
 }
 
 func (c *Client) publicGet(target interface{}, URI string, params ...func(url.Values)) error {
-	URL, _ := url.Parse(fmt.Sprintf("%s%s", c.baseURL, URI))
-
 	values := url.Values{}
 	for _, p := range params {
 		p(values)
 	}
 
-	response, err := c.client.Get(URL.String())
+	URL := fmt.Sprintf("%s%s?%s", c.baseURL, URI, values.Encode())
+
+	response, err := c.client.Get(URL)
 	if err != nil {
 		// We should probably do some error parsing here. At least determine
 		// if it's a retriable error.
@@ -139,6 +139,21 @@ func (c *Client) ExchangeInfo() (*ExchangeInfo, error) {
 	err := c.publicGet(info, "/api/v1/exchangeInfo")
 
 	return info, err
+}
+
+// OrderBook will return the current order book for symbol.
+func (c *Client) OrderBook(symbol Symbol, limit int) (*OrderBook, error) {
+	proxy := &orderBookProxy{}
+
+	err := c.publicGet(proxy, "/api/v1/depth",
+		param("symbol", symbol.upperCase()),
+		param("limit", limit),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return proxy.real()
 }
 
 func (c *Client) AggregatedTradesStream(symbol Symbol) (*AggregatedTradesStream, error) {
