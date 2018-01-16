@@ -156,6 +156,22 @@ func (c *Client) OrderBook(symbol Symbol, limit int) (*OrderBook, error) {
 	return proxy.real()
 }
 
+func (c *Client) AggregateTrades(symbol Symbol, options ...func(*query)) ([]AggregatedTrades, error) {
+	var aggTrades []AggregatedTrades
+
+	q := &query{}
+	for _, o := range options {
+		o(q)
+	}
+
+	err := c.publicGet(&aggTrades, "/api/v1/aggTrades",
+		param("symbol", symbol.upperCase()),
+		q.params(),
+	)
+
+	return aggTrades, err
+}
+
 func (c *Client) AggregatedTradesStream(symbol Symbol) (*AggregatedTradesStream, error) {
 	URL := fmt.Sprintf("%s/ws/%s@aggTrade", c.streamBaseURL, string(symbol))
 

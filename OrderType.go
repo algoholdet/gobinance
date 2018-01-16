@@ -8,8 +8,8 @@ import (
 type OrderType string
 
 const (
-	Limit  OrderType = "LIMIT"
-	Market OrderType = "MARKET"
+	OrderTypeLimit  OrderType = "LIMIT"
+	OrderTypeMarket OrderType = "MARKET"
 )
 
 // UnmarshalJSON implements json.Unmarshaler while making sure only enums
@@ -24,7 +24,7 @@ func (o *OrderType) UnmarshalJSON(data []byte) error {
 	order := OrderType(s)
 
 	switch order {
-	case Limit, Market:
+	case OrderTypeLimit, OrderTypeMarket:
 		*o = order
 	default:
 		return fmt.Errorf("%s is not a valid order type", s)
