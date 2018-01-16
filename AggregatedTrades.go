@@ -6,15 +6,15 @@ import (
 
 // AggregatedTrades is a trade at the Binance exchance.
 type AggregatedTrades struct {
-	Symbol       string  `json:"s"`
-	TradeID      int64   `json:"a"`
-	Price        float64 `json:"p,string"`
-	Quantity     float64 `json:"q,string"`
-	FirstTradeID int64   `json:"f"`
-	LastTradeID  int64   `json:"l"`
-	Timestamp    Time    `json:"T"`
-	Maker        bool    `json:"m"`
-	BestMatch    bool    `json:"M"`
+	Symbol       Symbol `json:"s"`
+	TradeID      int64  `json:"a"`
+	Price        Value  `json:"p"`
+	Quantity     Value  `json:"q"`
+	FirstTradeID int64  `json:"f"`
+	LastTradeID  int64  `json:"l"`
+	Timestamp    Time   `json:"T"`
+	Maker        bool   `json:"m"`
+	BestMatch    bool   `json:"M"`
 }
 
 // ColorString will format the trade as a string suitable for printing to the
@@ -30,7 +30,7 @@ func (t *AggregatedTrades) ColorString(previous *AggregatedTrades) string {
 		}
 	}
 
-	ret += fmt.Sprintf("%.02f\033[0m %.03f %s", t.Price, t.Quantity, t.Timestamp.String())
+	ret += fmt.Sprintf("%.02f\033[0m %.03f %s", t.Price.Float64(), t.Quantity.Float64(), t.Timestamp.String())
 
 	if t.Maker {
 		ret += "\033[36m Maker\033[0m"
