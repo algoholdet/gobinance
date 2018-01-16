@@ -109,6 +109,23 @@ func (c *Client) ServerTime() (Time, error) {
 	return proxy.Time, err
 }
 
+// ExchangeInfo returns current exchange trading rules and symbol information.
+func (c *Client) ExchangeInfo() (*ExchangeInfo, error) {
+	URL := fmt.Sprintf("%s/api/v1/exchangeInfo", c.baseURL)
+	response, err := c.client.Get(URL)
+	if err != nil {
+		return &ExchangeInfo{}, err
+	}
+	defer response.Body.Close()
+
+	info := &ExchangeInfo{}
+
+	decoder := json.NewDecoder(response.Body)
+	err = decoder.Decode(info)
+
+	return info, err
+}
+
 func (c *Client) AggregatedTradesStream(symbol Symbol) (*AggregatedTradesStream, error) {
 	URL := fmt.Sprintf("%s/ws/%s@aggTrade", c.streamBaseURL, string(symbol))
 
