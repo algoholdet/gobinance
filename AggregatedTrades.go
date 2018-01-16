@@ -6,6 +6,7 @@ import (
 
 // AggregatedTrades is a trade at the Binance exchance.
 type AggregatedTrades struct {
+	Symbol       string  `json:"s"`
 	TradeID      int64   `json:"a"`
 	Price        float64 `json:"p,string"`
 	Quantity     float64 `json:"q,string"`
@@ -20,7 +21,7 @@ type AggregatedTrades struct {
 // console. If you provide previous it will try to color the price red or
 // green.
 func (t *AggregatedTrades) ColorString(previous *AggregatedTrades) string {
-	ret := fmt.Sprintf("%10d ", t.TradeID)
+	ret := fmt.Sprintf("%10s %10d ", t.Symbol, t.TradeID)
 	if previous != nil {
 		if previous.Price > t.Price {
 			ret += "\033[31m"
