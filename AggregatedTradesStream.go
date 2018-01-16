@@ -6,13 +6,13 @@ import (
 	"golang.org/x/net/websocket"
 )
 
-// TradeStream represents a stream from the aggregated trades endpoint.
-type TradeStream struct {
+// AggregatedTradesStream represents a stream from the aggregated trades endpoint.
+type AggregatedTradesStream struct {
 	*websocket.Conn
 }
 
 // Read a trade from the stream. This will block until a trade is ready.
-func (s *TradeStream) Read() (*AggregatedTrades, error) {
+func (s *AggregatedTradesStream) Read() (*AggregatedTrades, error) {
 	var msg = make([]byte, 512)
 
 	n, err := s.Conn.Read(msg)

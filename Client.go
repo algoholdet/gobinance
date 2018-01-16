@@ -109,7 +109,7 @@ func (c *Client) ServerTime() (Time, error) {
 	return proxy.Time, err
 }
 
-func (c *Client) AggregatedTradesStream(symbol string) (*TradeStream, error) {
+func (c *Client) AggregatedTradesStream(symbol string) (*AggregatedTradesStream, error) {
 	URL := fmt.Sprintf("%s/ws/%s@aggTrade", c.streamBaseURL, symbol)
 
 	conn, err := websocket.Dial(URL, "", "http://localhost/")
@@ -117,7 +117,7 @@ func (c *Client) AggregatedTradesStream(symbol string) (*TradeStream, error) {
 		return nil, err
 	}
 
-	stream := &TradeStream{
+	stream := &AggregatedTradesStream{
 		Conn: conn,
 	}
 
