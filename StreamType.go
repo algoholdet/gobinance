@@ -36,6 +36,7 @@ func (t StreamType) iface() interface{} {
 		return new(AggregatedTrades)
 
 	case StreamTypeTrade:
+		return new(Trade)
 
 	case StreamTypeKLine1m, StreamTypeKLine3m, StreamTypeKLine5m,
 		StreamTypeKLine15m, StreamTypeKLine30m, StreamTypeKLine1h,

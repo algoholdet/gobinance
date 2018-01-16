@@ -195,8 +195,8 @@ func (c *Client) AggregateTrades(symbol Symbol, options ...func(*query)) ([]Aggr
 	return aggTrades, err
 }
 
-func (c *Client) OldTrades(symbol Symbol, options ...func(*query)) ([]Trade, error) {
-	var trades []Trade
+func (c *Client) HistoricalTrades(symbol Symbol, options ...func(*query)) ([]HistoricalTrade, error) {
+	var trades []HistoricalTrade
 
 	q := &query{}
 	for _, o := range options {
@@ -220,6 +220,21 @@ func (c *Client) AggregatedTradesStream(symbol Symbol) (*AggregatedTradesStream,
 	}
 
 	stream := &AggregatedTradesStream{
+		Conn: conn,
+	}
+
+	return stream, nil
+}
+
+func (c *Client) TradeStream(symbol Symbol) (*TradeStream, error) {
+	URL := fmt.Sprintf("%s/ws/%s@trade", c.streamBaseURL, string(symbol))
+
+	conn, err := websocket.Dial(URL, "", "http://localhost/")
+	if err != nil {
+		return nil, err
+	}
+
+	stream := &TradeStream{
 		Conn: conn,
 	}
 
