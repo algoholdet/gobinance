@@ -211,6 +211,42 @@ func (c *Client) HistoricalTrades(symbol Symbol, options ...func(*query)) ([]His
 	return trades, err
 }
 
+func (c *Client) LatestPriceAll() (map[Symbol]Value, error) {
+	var proxy []struct {
+		Symbol Symbol `json:"symbol"`
+		Price  Value  `json:"price"`
+	}
+
+	err := c.publicGet(&proxy, "/api/v3/ticker/price")
+	if err != nil {
+		return nil, err
+	}
+
+	m := make(map[Symbol]Value, len(proxy))
+
+	for _, p := range proxy {
+		m[p.Symbol] = p.Price
+	}
+
+	return m, nil
+}
+
+func (c *Client) LatestPrice(symbol Symbol) (Value, error) {
+	var proxy struct {
+		Symbol Symbol `json:"symbol"`
+		Price  Value  `json:"price"`
+	}
+
+	err := c.publicGet(&proxy, "/api/v3/ticker/price",
+		param("symbol", symbol.upperCase()),
+	)
+	if err != nil {
+		return "-1.0", err
+	}
+
+	return proxy.Price, nil
+}
+
 func (c *Client) AggregatedTradesStream(symbol Symbol) (*AggregatedTradesStream, error) {
 	URL := fmt.Sprintf("%s/ws/%s@aggTrade", c.streamBaseURL, string(symbol))
 
