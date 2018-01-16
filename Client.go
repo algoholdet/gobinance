@@ -123,3 +123,18 @@ func (c *Client) AggregatedTradesStream(symbol string) (*AggregatedTradesStream,
 
 	return stream, nil
 }
+
+func (c *Client) CombinedStream(streams []StreamID) (*CombinedStream, error) {
+	URL := fmt.Sprintf("%s/stream?streams=%s", c.streamBaseURL, joinStreamID(streams))
+
+	conn, err := websocket.Dial(URL, "", "http://localhost/")
+	if err != nil {
+		return nil, err
+	}
+
+	stream := &CombinedStream{
+		Conn: conn,
+	}
+
+	return stream, nil
+}
