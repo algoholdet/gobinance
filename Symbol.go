@@ -1,6 +1,8 @@
 package binance
 
-import "strings"
+import (
+	"strings"
+)
 
 type Symbol string
 
