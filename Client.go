@@ -2,9 +2,10 @@ package binance
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
+	"strconv"
 	"time"
 
 	"golang.org/x/net/websocket"
@@ -70,21 +71,51 @@ func NewClient(options ...func(*Client)) (*Client, error) {
 	return client, nil
 }
 
-// Ping will ping the Binance API and return a RTT duration and an error if
-// something went wrong.
-func (c *Client) Ping() (time.Duration, error) {
-	URL := fmt.Sprintf("%s/api/v1/ping", c.baseURL)
+func param(key string, value interface{}) func(url.Values) {
+	return func(v url.Values) {
+		switch value.(type) {
+		case string:
+			v.Add(key, value.(string))
+		case int:
+			v.Add(key, strconv.Itoa(value.(int)))
+		default:
+			panic("unsupported value type")
+		}
+	}
+}
 
-	t := time.Now()
-	response, err := c.client.Get(URL)
-	duration := time.Since(t)
+func (c *Client) publicGet(target interface{}, URI string, params ...func(url.Values)) error {
+	URL, _ := url.Parse(fmt.Sprintf("%s%s", c.baseURL, URI))
+
+	values := url.Values{}
+	for _, p := range params {
+		p(values)
+	}
+
+	response, err := c.client.Get(URL.String())
 	if err != nil {
-		return duration, err
+		// We should probably do some error parsing here. At least determine
+		// if it's a retriable error.
+		return err
 	}
 	defer response.Body.Close()
 
-	if response.StatusCode != http.StatusOK {
-		return duration, errors.New("ping error")
+	if target == nil {
+		return nil
+	}
+
+	decoder := json.NewDecoder(response.Body)
+	return decoder.Decode(target)
+}
+
+// Ping will ping the Binance API and return a RTT duration and an error if
+// something went wrong.
+func (c *Client) Ping() (time.Duration, error) {
+	t := time.Now()
+	err := c.publicGet(nil, "/api/v1/ping")
+	duration := time.Since(t)
+	if err != nil {
+		return duration, err
 	}
 
 	return duration, nil
@@ -96,32 +127,16 @@ func (c *Client) ServerTime() (Time, error) {
 		Time Time `json:"serverTime"`
 	}
 
-	URL := fmt.Sprintf("%s/api/v1/time", c.baseURL)
-	response, err := c.client.Get(URL)
-	if err != nil {
-		return proxy.Time, err
-	}
-	defer response.Body.Close()
-
-	decoder := json.NewDecoder(response.Body)
-	err = decoder.Decode(&proxy)
+	err := c.publicGet(&proxy, "/api/v1/time")
 
 	return proxy.Time, err
 }
 
 // ExchangeInfo returns current exchange trading rules and symbol information.
 func (c *Client) ExchangeInfo() (*ExchangeInfo, error) {
-	URL := fmt.Sprintf("%s/api/v1/exchangeInfo", c.baseURL)
-	response, err := c.client.Get(URL)
-	if err != nil {
-		return &ExchangeInfo{}, err
-	}
-	defer response.Body.Close()
-
 	info := &ExchangeInfo{}
 
-	decoder := json.NewDecoder(response.Body)
-	err = decoder.Decode(info)
+	err := c.publicGet(info, "/api/v1/exchangeInfo")
 
 	return info, err
 }
