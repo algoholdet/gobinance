@@ -2,6 +2,7 @@ package binance
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -84,7 +85,7 @@ func param(key string, value interface{}) func(url.Values) {
 	}
 }
 
-func (c *Client) publicGet(target interface{}, URI string, params ...func(url.Values)) error {
+func (c *Client) buildRequest(URI string, params ...func(url.Values)) (*http.Request, error) {
 	values := url.Values{}
 	for _, p := range params {
 		p(values)
@@ -92,13 +93,17 @@ func (c *Client) publicGet(target interface{}, URI string, params ...func(url.Va
 
 	URL := fmt.Sprintf("%s%s?%s", c.baseURL, URI, values.Encode())
 
-	response, err := c.client.Get(URL)
+	return http.NewRequest("GET", URL, nil)
+}
+
+func (c *Client) doRequest(target interface{}, req *http.Request) error {
+	response, err := c.client.Do(req)
 	if err != nil {
-		// We should probably do some error parsing here. At least determine
-		// if it's a retriable error.
 		return err
 	}
 	defer response.Body.Close()
+
+	// FIXME: Handle various errors from the API here
 
 	if target == nil {
 		return nil
@@ -106,6 +111,24 @@ func (c *Client) publicGet(target interface{}, URI string, params ...func(url.Va
 
 	decoder := json.NewDecoder(response.Body)
 	return decoder.Decode(target)
+}
+
+func (c *Client) publicGet(target interface{}, URI string, params ...func(url.Values)) error {
+	req, _ := c.buildRequest(URI, params...)
+
+	return c.doRequest(target, req)
+}
+
+func (c *Client) marketGet(target interface{}, URI string, params ...func(url.Values)) error {
+	if c.apiKey == "" {
+		return errors.New("no API key set")
+	}
+
+	req, _ := c.buildRequest(URI, params...)
+
+	req.Header.Add("X-MBX-APIKEY", c.apiKey)
+
+	return c.doRequest(target, req)
 }
 
 // Ping will ping the Binance API and return a RTT duration and an error if
@@ -170,6 +193,22 @@ func (c *Client) AggregateTrades(symbol Symbol, options ...func(*query)) ([]Aggr
 	)
 
 	return aggTrades, err
+}
+
+func (c *Client) OldTrades(symbol Symbol, options ...func(*query)) ([]Trade, error) {
+	var trades []Trade
+
+	q := &query{}
+	for _, o := range options {
+		o(q)
+	}
+
+	err := c.marketGet(&trades, "/api/v1/historicalTrades",
+		param("symbol", symbol.upperCase()),
+		q.params(),
+	)
+
+	return trades, err
 }
 
 func (c *Client) AggregatedTradesStream(symbol Symbol) (*AggregatedTradesStream, error) {
