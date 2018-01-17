@@ -11,3 +11,7 @@ type Symbol string
 func (s Symbol) upperCase() string {
 	return strings.ToUpper(string(s))
 }
+
+func (s Symbol) lowerCase() string {
+	return strings.ToLower(string(s))
+}
