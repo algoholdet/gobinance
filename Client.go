@@ -96,7 +96,6 @@ func (c *Client) buildRequest(URI string, params ...func(url.Values)) (*http.Req
 	}
 
 	URL := fmt.Sprintf("%s%s?%s", c.baseURL, URI, values.Encode())
-	fmt.Printf("URL: %s\n", URL)
 
 	return http.NewRequest("GET", URL, nil)
 }
@@ -289,6 +288,39 @@ func (c *Client) BestPrice(symbol Symbol) (*BestPrice, error) {
 	}
 
 	return proxy.real()
+}
+
+// CandleStick returns Kline/candlestick bars for symbol. Klines are uniquely
+// identified by their open time. You can refine the query with Limit(),
+// StartTime() and EndTime().
+func (c *Client) CandleStick(symbol Symbol, interval string, options ...func(*query)) ([]CandleStick, error) {
+	var proxy []candleStickProxy
+
+	q := &query{}
+	for _, o := range options {
+		o(q)
+	}
+
+	err := c.publicGet(&proxy, "/api/v1/klines",
+		param("symbol", symbol.upperCase()),
+		param("interval", interval),
+		q.params(),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	sticks := make([]CandleStick, len(proxy), len(proxy))
+	for i, p := range proxy {
+		stick, err := p.real()
+		if err != nil {
+			return nil, err
+		}
+
+		sticks[i] = *stick
+	}
+
+	return sticks, nil
 }
 
 // AggregatedTradesStream will open a websocket stream that will stream
