@@ -96,6 +96,7 @@ func (c *Client) buildRequest(URI string, params ...func(url.Values)) (*http.Req
 	}
 
 	URL := fmt.Sprintf("%s%s?%s", c.baseURL, URI, values.Encode())
+	fmt.Printf("URL: %s\n", URL)
 
 	return http.NewRequest("GET", URL, nil)
 }
@@ -255,6 +256,39 @@ func (c *Client) LatestPrice(symbol Symbol) (Value, error) {
 	}
 
 	return proxy.Price, nil
+}
+
+// BestPriceAll returns the best price/quantity for all symbols.
+func (c *Client) BestPriceAll() (map[Symbol]BestPrice, error) {
+	var proxy []bestPriceProxy
+
+	err := c.publicGet(&proxy, "/api/v3/ticker/bookTicker")
+	if err != nil {
+		return nil, err
+	}
+
+	bestPrices := make(map[Symbol]BestPrice, len(proxy))
+
+	for _, p := range proxy {
+		bestPrice, _ := p.real()
+
+		bestPrices[p.Symbol] = *bestPrice
+	}
+
+	return bestPrices, nil
+}
+
+// BestPrice returns best price/qty on the order book for a symbol.
+func (c *Client) BestPrice(symbol Symbol) (*BestPrice, error) {
+	var proxy bestPriceProxy
+	err := c.publicGet(&proxy, "/api/v3/ticker/bookTicker",
+		param("symbol", symbol.upperCase()),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return proxy.real()
 }
 
 // AggregatedTradesStream will open a websocket stream that will stream
