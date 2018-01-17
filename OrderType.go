@@ -5,8 +5,10 @@ import (
 	"fmt"
 )
 
+// OrderType is the type of an order.
 type OrderType string
 
+// OrderType is a limit or a market order.
 const (
 	OrderTypeLimit  OrderType = "LIMIT"
 	OrderTypeMarket OrderType = "MARKET"

@@ -5,8 +5,10 @@ import (
 	"fmt"
 )
 
+// OrderStatus is the status of an order in engine.
 type OrderStatus string
 
+// The different states of an order.
 const (
 	New             OrderStatus = "NEW"
 	PartiallyFilled OrderStatus = "PARTIALLY_FILLED"

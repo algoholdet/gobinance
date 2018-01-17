@@ -4,6 +4,7 @@ import (
 	"strings"
 )
 
+// Symbol it a trading pair. For example "BTCUSDT". This is not case-sensitive.
 type Symbol string
 
 // upperCase will return s in uppercase. For some reason some endpoints

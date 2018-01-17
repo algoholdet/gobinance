@@ -21,12 +21,16 @@ type Client struct {
 	client        *http.Client
 }
 
+// APIKey will parse the API key to the client. This is not needed for all
+// calls.
 func APIKey(apiKey string) func(*Client) {
 	return func(c *Client) {
 		c.apiKey = apiKey
 	}
 }
 
+// APISecret will parse the API secret to the client. This is not needed for
+// all calls.
 func APISecret(apiSecret string) func(*Client) {
 	return func(c *Client) {
 		c.apiSecret = apiSecret
@@ -179,6 +183,8 @@ func (c *Client) OrderBook(symbol Symbol, limit int) (*OrderBook, error) {
 	return proxy.real()
 }
 
+// AggregateTrades will return aggregated historic trades for symbol. You can
+// query using FromID(), StartTime(), EndTime() and Limit().
 func (c *Client) AggregateTrades(symbol Symbol, options ...func(*query)) ([]AggregatedTrades, error) {
 	var aggTrades []AggregatedTrades
 
@@ -195,6 +201,8 @@ func (c *Client) AggregateTrades(symbol Symbol, options ...func(*query)) ([]Aggr
 	return aggTrades, err
 }
 
+// HistoricalTrades retrieves historical trades for symbol. You can use
+// Limit() and FromID().
 func (c *Client) HistoricalTrades(symbol Symbol, options ...func(*query)) ([]HistoricalTrade, error) {
 	var trades []HistoricalTrade
 
@@ -211,6 +219,7 @@ func (c *Client) HistoricalTrades(symbol Symbol, options ...func(*query)) ([]His
 	return trades, err
 }
 
+// LatestPriceAll will retrieve latest price for all symbols.
 func (c *Client) LatestPriceAll() (map[Symbol]Value, error) {
 	var proxy []struct {
 		Symbol Symbol `json:"symbol"`
@@ -231,6 +240,7 @@ func (c *Client) LatestPriceAll() (map[Symbol]Value, error) {
 	return m, nil
 }
 
+// LatestPrice will retrieve the latest price for a symbol.
 func (c *Client) LatestPrice(symbol Symbol) (Value, error) {
 	var proxy struct {
 		Symbol Symbol `json:"symbol"`
@@ -247,6 +257,9 @@ func (c *Client) LatestPrice(symbol Symbol) (Value, error) {
 	return proxy.Price, nil
 }
 
+// AggregatedTradesStream will open a websocket stream that will stream
+// aggregated trades for symbol. You can use the Read() method when reading
+// from the stream. You should call Close() when done.
 func (c *Client) AggregatedTradesStream(symbol Symbol) (*AggregatedTradesStream, error) {
 	URL := fmt.Sprintf("%s/ws/%s@aggTrade", c.streamBaseURL, string(symbol))
 
@@ -262,6 +275,9 @@ func (c *Client) AggregatedTradesStream(symbol Symbol) (*AggregatedTradesStream,
 	return stream, nil
 }
 
+// TradeStream will open a websocket stream that will stream trades for symbol.
+// You can use the Read() method when reading from the stream. You should call
+// Close() when done.
 func (c *Client) TradeStream(symbol Symbol) (*TradeStream, error) {
 	URL := fmt.Sprintf("%s/ws/%s@trade", c.streamBaseURL, string(symbol))
 
@@ -277,6 +293,7 @@ func (c *Client) TradeStream(symbol Symbol) (*TradeStream, error) {
 	return stream, nil
 }
 
+// CombinedStream will open a websocket stream for multiple events.
 func (c *Client) CombinedStream(streams []StreamID) (*CombinedStream, error) {
 	URL := fmt.Sprintf("%s/stream?streams=%s", c.streamBaseURL, joinStreamID(streams))
 

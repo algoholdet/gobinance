@@ -5,11 +5,13 @@ import (
 	"fmt"
 )
 
+// OrderSide is an enum determined the side of an order.
 type OrderSide string
 
+// OrderSide is always OrderSideBuy or OrderSideSell.
 const (
-	Buy  OrderSide = "BUY"
-	Sell OrderSide = "SELL"
+	OrderSideBuy  OrderSide = "BUY"
+	OrderSideSell OrderSide = "SELL"
 )
 
 // UnmarshalJSON implements json.Unmarshaler while making sure only enums
@@ -24,7 +26,7 @@ func (o *OrderSide) UnmarshalJSON(data []byte) error {
 	side := OrderSide(s)
 
 	switch side {
-	case Buy, Sell:
+	case OrderSideBuy, OrderSideSell:
 		*o = side
 	default:
 		return fmt.Errorf("%s is not a valid order side", s)

@@ -10,6 +10,7 @@ type HistoricalTrade struct {
 	BestMatch  bool  `json:"isBestMatch"`
 }
 
+// Trade is a trade matched by the engine.
 type Trade struct {
 	Symbol        Symbol `json:"s"`
 	TradeID       int64  `json:"t"`

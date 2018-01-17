@@ -30,6 +30,8 @@ const (
 	StreamTypeDepth                   StreamType = "depth"
 )
 
+// iface returns the type used to represent t - or nil if it's unknown or not
+// implemented.
 func (t StreamType) iface() interface{} {
 	switch t {
 	case StreamTypeAggregatedTrade:
