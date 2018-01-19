@@ -405,7 +405,7 @@ func (c *Client) MyTrades(symbol Symbol, options ...func(*query)) ([]MyTrade, er
 // aggregated trades for symbol. You can use the Read() method when reading
 // from the stream. You should call Close() when done.
 func (c *Client) AggregatedTradesStream(symbol Symbol) (*AggregatedTradesStream, error) {
-	URL := fmt.Sprintf("%s/ws/%s@aggTrade", c.streamBaseURL, string(symbol))
+	URL := fmt.Sprintf("%s/ws/%s@aggTrade", c.streamBaseURL, string(symbol.lowerCase()))
 
 	conn, err := websocket.Dial(URL, "", "http://localhost/")
 	if err != nil {
@@ -423,7 +423,7 @@ func (c *Client) AggregatedTradesStream(symbol Symbol) (*AggregatedTradesStream,
 // You can use the Read() method when reading from the stream. You should call
 // Close() when done.
 func (c *Client) TradeStream(symbol Symbol) (*TradeStream, error) {
-	URL := fmt.Sprintf("%s/ws/%s@trade", c.streamBaseURL, string(symbol))
+	URL := fmt.Sprintf("%s/ws/%s@trade", c.streamBaseURL, string(symbol.lowerCase()))
 
 	conn, err := websocket.Dial(URL, "", "http://localhost/")
 	if err != nil {
