@@ -89,7 +89,7 @@ func param(key string, value interface{}) func(url.Values) {
 	}
 }
 
-func (c *Client) buildRequest(URI string, params ...func(url.Values)) (*http.Request, error) {
+func (c *Client) buildRequest(method string, URI string, params ...func(url.Values)) (*http.Request, error) {
 	values := url.Values{}
 	for _, p := range params {
 		p(values)
@@ -97,7 +97,7 @@ func (c *Client) buildRequest(URI string, params ...func(url.Values)) (*http.Req
 
 	URL := fmt.Sprintf("%s%s?%s", c.baseURL, URI, values.Encode())
 
-	return http.NewRequest("GET", URL, nil)
+	return http.NewRequest(method, URL, nil)
 }
 
 func (c *Client) doRequest(target interface{}, req *http.Request) error {
@@ -118,7 +118,7 @@ func (c *Client) doRequest(target interface{}, req *http.Request) error {
 }
 
 func (c *Client) publicGet(target interface{}, URI string, params ...func(url.Values)) error {
-	req, _ := c.buildRequest(URI, params...)
+	req, _ := c.buildRequest("GET", URI, params...)
 
 	return c.doRequest(target, req)
 }
@@ -128,7 +128,31 @@ func (c *Client) marketGet(target interface{}, URI string, params ...func(url.Va
 		return errors.New("no API key set")
 	}
 
-	req, _ := c.buildRequest(URI, params...)
+	req, _ := c.buildRequest("GET", URI, params...)
+
+	req.Header.Add("X-MBX-APIKEY", c.apiKey)
+
+	return c.doRequest(target, req)
+}
+
+func (c *Client) signedCall(target interface{}, method string, URI string, params ...func(url.Values)) error {
+	if c.apiSecret == "" {
+		return errors.New("no API secret set")
+	}
+
+	// Add a timestamp to the request.
+	timestamp := fmt.Sprintf("%d",
+		time.Now().UnixNano()/int64(time.Millisecond))
+
+	params = append(params, param("timestamp", timestamp))
+
+	req, _ := c.buildRequest("GET", URI, params...)
+
+	// Add a signature to the request. It will be safe to simply add it here
+	// using '&', since timestamp will always be set and we will never
+	// encounter an empty query string.
+	signature := signString(req.URL.RawQuery, c.apiSecret)
+	req.URL.RawQuery += "&signature=" + signature
 
 	req.Header.Add("X-MBX-APIKEY", c.apiKey)
 
