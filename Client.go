@@ -211,17 +211,12 @@ func (c *Client) OrderBook(symbol Symbol, limit int) (*OrderBook, error) {
 
 // AggregateTrades will return aggregated historic trades for symbol. You can
 // query using FromID(), StartTime(), EndTime() and Limit().
-func (c *Client) AggregateTrades(symbol Symbol, options ...func(*query)) ([]AggregatedTrades, error) {
+func (c *Client) AggregateTrades(symbol Symbol, options ...QueryFunc) ([]AggregatedTrades, error) {
 	var aggTrades []AggregatedTrades
-
-	q := &query{}
-	for _, o := range options {
-		o(q)
-	}
 
 	err := c.publicGet(&aggTrades, "/api/v1/aggTrades",
 		param("symbol", symbol.upperCase()),
-		q.params(),
+		newQuery(options).params(),
 	)
 
 	return aggTrades, err
@@ -229,17 +224,12 @@ func (c *Client) AggregateTrades(symbol Symbol, options ...func(*query)) ([]Aggr
 
 // HistoricalTrades retrieves historical trades for symbol. You can use
 // Limit() and FromID().
-func (c *Client) HistoricalTrades(symbol Symbol, options ...func(*query)) ([]HistoricalTrade, error) {
+func (c *Client) HistoricalTrades(symbol Symbol, options ...QueryFunc) ([]HistoricalTrade, error) {
 	var trades []HistoricalTrade
-
-	q := &query{}
-	for _, o := range options {
-		o(q)
-	}
 
 	err := c.marketGet(&trades, "/api/v1/historicalTrades",
 		param("symbol", symbol.upperCase()),
-		q.params(),
+		newQuery(options).params(),
 	)
 
 	return trades, err
@@ -319,18 +309,13 @@ func (c *Client) BestPrice(symbol Symbol) (*BestPrice, error) {
 // CandleStick returns Kline/candlestick bars for symbol. Klines are uniquely
 // identified by their open time. You can refine the query with Limit(),
 // StartTime() and EndTime().
-func (c *Client) CandleStick(symbol Symbol, interval string, options ...func(*query)) ([]CandleStick, error) {
+func (c *Client) CandleStick(symbol Symbol, interval string, options ...QueryFunc) ([]CandleStick, error) {
 	var proxy []candleStickProxy
-
-	q := &query{}
-	for _, o := range options {
-		o(q)
-	}
 
 	err := c.publicGet(&proxy, "/api/v1/klines",
 		param("symbol", symbol.upperCase()),
 		param("interval", interval),
-		q.params(),
+		newQuery(options).params(),
 	)
 	if err != nil {
 		return nil, err
@@ -384,17 +369,12 @@ func (c *Client) ChangeStatistics(symbol Symbol) (*ChangeStatistics, error) {
 // MyTrades return trades for a specific symbol. You can refine the query with
 // Limit() & FromID().
 // Note: recvWindow parameter not supported (yet).
-func (c *Client) MyTrades(symbol Symbol, options ...func(*query)) ([]MyTrade, error) {
+func (c *Client) MyTrades(symbol Symbol, options ...QueryFunc) ([]MyTrade, error) {
 	var orders []MyTrade
-
-	q := &query{}
-	for _, o := range options {
-		o(q)
-	}
 
 	err := c.signedCall(&orders, "GET", "/api/v3/myTrades",
 		param("symbol", symbol.upperCase()),
-		q.params(),
+		newQuery(options).params(),
 	)
 	if err != nil {
 		return nil, err
