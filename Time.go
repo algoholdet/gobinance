@@ -29,3 +29,11 @@ func (t *Time) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+
+// FromTime will take a regular Go timestamp and convert it to a type suitable
+// for Binance API consumption.
+func FromTime(t time.Time) Time {
+	return Time{
+		Time: t,
+	}
+}
