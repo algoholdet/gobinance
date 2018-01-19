@@ -83,8 +83,10 @@ func param(key string, value interface{}) func(url.Values) {
 			v.Add(key, value.(string))
 		case int:
 			v.Add(key, strconv.Itoa(value.(int)))
+		case int64:
+			v.Add(key, strconv.FormatInt(value.(int64), 10))
 		default:
-			panic("unsupported value type")
+			panic(fmt.Sprintf("unsupported value type: %T", value))
 		}
 	}
 }
