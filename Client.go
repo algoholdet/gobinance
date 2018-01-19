@@ -379,6 +379,28 @@ func (c *Client) ChangeStatistics(symbol Symbol) (*ChangeStatistics, error) {
 	return &changeStatistics, nil
 }
 
+// MyTrades return trades for a specific symbol. You can refine the query with
+// Limit() & FromID().
+// Note: recvWindow parameter not supported (yet).
+func (c *Client) MyTrades(symbol Symbol, options ...func(*query)) ([]MyTrade, error) {
+	var orders []MyTrade
+
+	q := &query{}
+	for _, o := range options {
+		o(q)
+	}
+
+	err := c.signedCall(&orders, "GET", "/api/v3/myTrades",
+		param("symbol", symbol.upperCase()),
+		q.params(),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return orders, nil
+}
+
 // AggregatedTradesStream will open a websocket stream that will stream
 // aggregated trades for symbol. You can use the Read() method when reading
 // from the stream. You should call Close() when done.
