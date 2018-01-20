@@ -17,7 +17,8 @@ type Time struct {
 func (t *Time) UnmarshalJSON(data []byte) error {
 	i, err := strconv.ParseInt(string(data), 10, 64)
 	if err != nil {
-		return err
+		// Try de decode as a regular timestamp. Sigh.
+		return t.Time.UnmarshalJSON(data)
 	}
 
 	sec := i / 1000
@@ -28,6 +29,18 @@ func (t *Time) UnmarshalJSON(data []byte) error {
 	t.Time = time.Unix(sec, usec).UTC()
 
 	return nil
+}
+
+// MarshalJSON implements json.Marshaler.
+func (t *Time) MarshalJSON() ([]byte, error) {
+	// Get timestamp in milliseconds.
+	ms := t.Time.UnixNano() / (int64(time.Millisecond))
+
+	// Convert to string.
+	str := strconv.FormatInt(ms, 10)
+
+	// Return as bytes for marshaler.
+	return []byte(str), nil
 }
 
 // FromTime will take a regular Go timestamp and convert it to a type suitable
