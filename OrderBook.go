@@ -1,6 +1,8 @@
 package binance
 
-import "errors"
+import (
+	"errors"
+)
 
 // OrderBook represents the current order book for a specific symbol.
 type OrderBook struct {
