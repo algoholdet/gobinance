@@ -30,7 +30,7 @@ func (s StreamID) Symbol() Symbol {
 // NewStreamID will return a new StreamID consisting of a symbol and a stream
 // type.
 func NewStreamID(symbol Symbol, typ StreamType) StreamID {
-	return StreamID(string(symbol.lowerCase()) + "@" + string(typ))
+	return StreamID(string(symbol.LowerCase()) + "@" + string(typ))
 }
 
 // joinStreamID is a helper to join a slice of StreamID's suited for passing

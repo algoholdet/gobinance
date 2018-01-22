@@ -199,7 +199,7 @@ func (c *Client) OrderBook(symbol Symbol, limit int) (*OrderBook, error) {
 	proxy := &orderBookProxy{}
 
 	err := c.publicGet(proxy, "/api/v1/depth",
-		param("symbol", symbol.upperCase()),
+		param("symbol", symbol.UpperCase()),
 		param("limit", limit),
 	)
 	if err != nil {
@@ -215,7 +215,7 @@ func (c *Client) AggregateTrades(symbol Symbol, options ...QueryFunc) ([]Aggrega
 	var aggTrades []AggregatedTrades
 
 	err := c.publicGet(&aggTrades, "/api/v1/aggTrades",
-		param("symbol", symbol.upperCase()),
+		param("symbol", symbol.UpperCase()),
 		newQuery(options).params(),
 	)
 
@@ -228,7 +228,7 @@ func (c *Client) HistoricalTrades(symbol Symbol, options ...QueryFunc) ([]Histor
 	var trades []HistoricalTrade
 
 	err := c.marketGet(&trades, "/api/v1/historicalTrades",
-		param("symbol", symbol.upperCase()),
+		param("symbol", symbol.UpperCase()),
 		newQuery(options).params(),
 	)
 
@@ -264,7 +264,7 @@ func (c *Client) LatestPrice(symbol Symbol) (Value, error) {
 	}
 
 	err := c.publicGet(&proxy, "/api/v3/ticker/price",
-		param("symbol", symbol.upperCase()),
+		param("symbol", symbol.UpperCase()),
 	)
 	if err != nil {
 		return "-1.0", err
@@ -297,7 +297,7 @@ func (c *Client) BestPriceAll() (map[Symbol]BestPrice, error) {
 func (c *Client) BestPrice(symbol Symbol) (*BestPrice, error) {
 	var proxy bestPriceProxy
 	err := c.publicGet(&proxy, "/api/v3/ticker/bookTicker",
-		param("symbol", symbol.upperCase()),
+		param("symbol", symbol.UpperCase()),
 	)
 	if err != nil {
 		return nil, err
@@ -313,7 +313,7 @@ func (c *Client) CandleStick(symbol Symbol, interval string, options ...QueryFun
 	var proxy []candleStickProxy
 
 	err := c.publicGet(&proxy, "/api/v1/klines",
-		param("symbol", symbol.upperCase()),
+		param("symbol", symbol.UpperCase()),
 		param("interval", interval),
 		newQuery(options).params(),
 	)
@@ -357,7 +357,7 @@ func (c *Client) ChangeStatistics(symbol Symbol) (*ChangeStatistics, error) {
 	var changeStatistics ChangeStatistics
 
 	err := c.publicGet(&changeStatistics, "/api/v1/ticker/24hr",
-		param("symbol", symbol.upperCase()),
+		param("symbol", symbol.UpperCase()),
 	)
 	if err != nil {
 		return nil, err
@@ -373,7 +373,7 @@ func (c *Client) MyTrades(symbol Symbol, options ...QueryFunc) ([]MyTrade, error
 	var orders []MyTrade
 
 	err := c.signedCall(&orders, "GET", "/api/v3/myTrades",
-		param("symbol", symbol.upperCase()),
+		param("symbol", symbol.UpperCase()),
 		newQuery(options).params(),
 	)
 	if err != nil {
@@ -387,7 +387,7 @@ func (c *Client) MyTrades(symbol Symbol, options ...QueryFunc) ([]MyTrade, error
 // aggregated trades for symbol. You can use the Read() method when reading
 // from the stream. You should call Close() when done.
 func (c *Client) AggregatedTradesStream(symbol Symbol) (*AggregatedTradesStream, error) {
-	URL := fmt.Sprintf("%s/ws/%s@aggTrade", c.streamBaseURL, string(symbol.lowerCase()))
+	URL := fmt.Sprintf("%s/ws/%s@aggTrade", c.streamBaseURL, string(symbol.LowerCase()))
 
 	conn, err := websocket.Dial(URL, "", "http://localhost/")
 	if err != nil {
@@ -405,7 +405,7 @@ func (c *Client) AggregatedTradesStream(symbol Symbol) (*AggregatedTradesStream,
 // You can use the Read() method when reading from the stream. You should call
 // Close() when done.
 func (c *Client) TradeStream(symbol Symbol) (*TradeStream, error) {
-	URL := fmt.Sprintf("%s/ws/%s@trade", c.streamBaseURL, string(symbol.lowerCase()))
+	URL := fmt.Sprintf("%s/ws/%s@trade", c.streamBaseURL, string(symbol.LowerCase()))
 
 	conn, err := websocket.Dial(URL, "", "http://localhost/")
 	if err != nil {
