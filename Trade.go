@@ -2,12 +2,13 @@ package binance
 
 // HistoricalTrade represents a trade in the past.
 type HistoricalTrade struct {
-	TradeID    int64 `json:"id"`
-	Price      Value `json:"price"`
-	Quantity   Value `json:"qty"`
-	Timestamp  Time  `json:"time"`
-	BuyerMaker bool  `json:"isBuyerMaker"`
-	BestMatch  bool  `json:"isBestMatch"`
+	TradeID       int64 `json:"id"`
+	Price         Value `json:"price"`
+	Quantity      Value `json:"qty"`
+	QuoteQuantity Value `json:"quoteQty"`
+	Timestamp     Time  `json:"time"`
+	BuyerMaker    bool  `json:"isBuyerMaker"`
+	BestMatch     bool  `json:"isBestMatch"`
 }
 
 // Trade is a trade matched by the engine.
