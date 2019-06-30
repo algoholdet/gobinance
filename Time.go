@@ -32,7 +32,7 @@ func (t *Time) UnmarshalJSON(data []byte) error {
 }
 
 // MarshalJSON implements json.Marshaler.
-func (t *Time) MarshalJSON() ([]byte, error) {
+func (t Time) MarshalJSON() ([]byte, error) {
 	// Get timestamp in milliseconds.
 	ms := t.Time.UnixNano() / (int64(time.Millisecond))
 
