@@ -10,8 +10,11 @@ type OrderType string
 
 // OrderType is a limit or a market order.
 const (
-	OrderTypeLimit  OrderType = "LIMIT"
-	OrderTypeMarket OrderType = "MARKET"
+	OrderTypeLimit           OrderType = "LIMIT"
+	OrderTypeLimitMaker      OrderType = "LIMIT_MAKER"
+	OrderTypeMarket          OrderType = "MARKET"
+	OrderTypeStopLossLimit   OrderType = "STOP_LOSS_LIMIT"
+	OrderTypeTakeProfitLimit OrderType = "TAKE_PROFIT_LIMIT"
 )
 
 // UnmarshalJSON implements json.Unmarshaler while making sure only enums
@@ -26,7 +29,7 @@ func (o *OrderType) UnmarshalJSON(data []byte) error {
 	order := OrderType(s)
 
 	switch order {
-	case OrderTypeLimit, OrderTypeMarket:
+	case OrderTypeLimit, OrderTypeLimitMaker, OrderTypeMarket, OrderTypeStopLossLimit, OrderTypeTakeProfitLimit:
 		*o = order
 	default:
 		return fmt.Errorf("%s is not a valid order type", s)
