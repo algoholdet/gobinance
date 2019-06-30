@@ -1,6 +1,6 @@
 # `import "github.com/abrander/algoholdet/binance"`
 
-This package provides access to the [Binance](https://binance.com/) [API](https://www.binance.com/restapipub.html).
+This package provides access to the [Binance](https://binance.com/) [API](https://github.com/binance-exchange/binance-official-api-docs).
 
 ## To-Do
 
