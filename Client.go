@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"strconv"
 	"time"
@@ -19,6 +21,7 @@ type Client struct {
 	streamBaseURL string
 	baseURL       string
 	client        *http.Client
+	dumpWriter    io.Writer
 }
 
 // APIKey will parse the API key to the client. This is not needed for all
@@ -58,6 +61,14 @@ func StreamBaseURL(streamBaseURL string) func(*Client) {
 func HTTPClient(client *http.Client) func(*Client) {
 	return func(c *Client) {
 		c.client = client
+	}
+}
+
+// DumpWriter will instruct Client to dump all HTTP requests and responses to
+// and from Binance to w.
+func DumpWriter(w io.Writer) func(*Client) {
+	return func(c *Client) {
+		c.dumpWriter = w
 	}
 }
 
@@ -103,11 +114,27 @@ func (c *Client) buildRequest(method string, URI string, params ...func(url.Valu
 }
 
 func (c *Client) doRequest(target interface{}, req *http.Request) error {
+	if c.dumpWriter != nil {
+		r, err := httputil.DumpRequestOut(req, true)
+		if err != nil {
+			return err
+		}
+		fmt.Fprintf(c.dumpWriter, "HTTP Request:\n%s\n", string(r))
+	}
+
 	response, err := c.client.Do(req)
 	if err != nil {
 		return err
 	}
 	defer response.Body.Close()
+
+	if c.dumpWriter != nil {
+		r, err := httputil.DumpResponse(response, true)
+		if err != nil {
+			return err
+		}
+		fmt.Fprintf(c.dumpWriter, "HTTP Response:\n%s\n", string(r))
+	}
 
 	// FIXME: Handle various errors from the API here
 
