@@ -22,6 +22,7 @@ type Client struct {
 	baseURL       string
 	client        *http.Client
 	dumpWriter    io.Writer
+	usedWeight    int
 }
 
 // APIKey will parse the API key to the client. This is not needed for all
@@ -140,12 +141,21 @@ func (c *Client) doRequest(target interface{}, req *http.Request) error {
 		return fmt.Errorf("got http status code %d", response.StatusCode)
 	}
 
+	if uw, err := strconv.Atoi(response.Header.Get("X-Mbx-Used-Weight")); err != nil {
+		c.usedWeight = uw
+	}
+
 	if target == nil {
 		return nil
 	}
 
 	decoder := json.NewDecoder(response.Body)
 	return decoder.Decode(target)
+}
+
+// UsedWeight will return the total weight used in the present minute.
+func (c *Client) UsedWeight() int {
+	return c.usedWeight
 }
 
 func (c *Client) publicGet(target interface{}, URI string, params ...func(url.Values)) error {
