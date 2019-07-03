@@ -136,7 +136,9 @@ func (c *Client) doRequest(target interface{}, req *http.Request) error {
 		fmt.Fprintf(c.dumpWriter, "HTTP Response:\n%s\n", string(r))
 	}
 
-	// FIXME: Handle various errors from the API here
+	if response.StatusCode >= http.StatusBadRequest {
+		return fmt.Errorf("got http status code %d", response.StatusCode)
+	}
 
 	if target == nil {
 		return nil
