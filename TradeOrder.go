@@ -1,7 +1,7 @@
 package binance
 
-// MyTrade is a trade order in the Binance system.
-type MyTrade struct {
+// TradeOrder is a trade order in the Binance system.
+type TradeOrder struct {
 	ID              int64  `json:"id"`
 	OrderID         int64  `json:"orderId"`
 	Price           Value  `json:"price"`
