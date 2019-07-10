@@ -408,8 +408,8 @@ func (c *Client) ChangeStatistics(symbol Symbol) (*ChangeStatistics, error) {
 // MyTrades return trades for a specific symbol. You can refine the query with
 // Limit() & FromID().
 // Note: recvWindow parameter not supported (yet).
-func (c *Client) MyTrades(symbol Symbol, options ...QueryFunc) ([]MyTrade, error) {
-	var orders []MyTrade
+func (c *Client) MyTrades(symbol Symbol, options ...QueryFunc) ([]TradeOrder, error) {
+	var orders []TradeOrder
 
 	err := c.signedCall(&orders, "GET", "/api/v3/myTrades",
 		param("symbol", symbol.UpperCase()),
