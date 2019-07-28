@@ -32,12 +32,12 @@ func (p *orderBookProxy) real() (*OrderBook, error) {
 			if len(b) == 3 {
 				p, ok := b[0].(string)
 				if !ok {
-					return errors.New("Unknown format")
+					return errors.New("unknown format")
 				}
 
 				q, ok := b[1].(string)
 				if !ok {
-					return errors.New("Unknown format")
+					return errors.New("unknown format")
 				}
 
 				out[i].Price = Value(p)
@@ -50,8 +50,8 @@ func (p *orderBookProxy) real() (*OrderBook, error) {
 
 	orderbook := &OrderBook{
 		LastUpdateID: p.LastUpdateID,
-		Bids:         make([]OrderBookPoint, len(p.Bids), len(p.Bids)),
-		Asks:         make([]OrderBookPoint, len(p.Asks), len(p.Asks)),
+		Bids:         make([]OrderBookPoint, len(p.Bids)),
+		Asks:         make([]OrderBookPoint, len(p.Asks)),
 	}
 
 	err := convert(p.Bids, orderbook.Bids)

@@ -7,7 +7,7 @@ import (
 	"golang.org/x/net/websocket"
 )
 
-// CombinedStream is a stream emitting diferent event types.
+// CombinedStream is a stream emitting different event types.
 type CombinedStream struct {
 	*websocket.Conn
 }
@@ -38,7 +38,7 @@ func combinedEvent(data []byte) (interface{}, error) {
 
 	target := p.Stream.Type().iface()
 	if target == nil {
-		return nil, fmt.Errorf("Unknown stream type: %s", p.Stream.Type())
+		return nil, fmt.Errorf("unknown stream type: %s", p.Stream.Type())
 	}
 
 	err = json.Unmarshal(p.Data, target)

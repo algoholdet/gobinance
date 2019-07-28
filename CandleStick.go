@@ -66,7 +66,7 @@ func (c *Client) CandleStick(symbol Symbol, interval string, options ...QueryFun
 		return nil, err
 	}
 
-	sticks := make([]CandleStick, len(proxy), len(proxy))
+	sticks := make([]CandleStick, len(proxy))
 	for i, p := range proxy {
 		stick, err := p.real()
 		if err != nil {

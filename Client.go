@@ -88,26 +88,26 @@ func NewClient(options ...func(*Client)) (*Client, error) {
 
 func param(key string, value interface{}) func(url.Values) {
 	return func(v url.Values) {
-		switch value.(type) {
+		switch t := value.(type) {
 		case string:
-			v.Add(key, value.(string))
+			v.Add(key, t)
 		case int:
-			v.Add(key, strconv.Itoa(value.(int)))
+			v.Add(key, strconv.Itoa(t))
 		case int64:
-			v.Add(key, strconv.FormatInt(value.(int64), 10))
+			v.Add(key, strconv.FormatInt(t, 10))
 		default:
 			panic(fmt.Sprintf("unsupported value type: %T", value))
 		}
 	}
 }
 
-func (c *Client) buildRequest(method string, URI string, params ...func(url.Values)) (*http.Request, error) {
+func (c *Client) buildRequest(method string, uri string, params ...func(url.Values)) (*http.Request, error) {
 	values := url.Values{}
 	for _, p := range params {
 		p(values)
 	}
 
-	URL := fmt.Sprintf("%s%s?%s", c.baseURL, URI, values.Encode())
+	URL := fmt.Sprintf("%s%s?%s", c.baseURL, uri, values.Encode())
 
 	return http.NewRequest(method, URL, nil)
 }
@@ -156,25 +156,25 @@ func (c *Client) UsedWeight() int {
 	return c.usedWeight
 }
 
-func (c *Client) publicGet(target interface{}, URI string, params ...func(url.Values)) error {
-	req, _ := c.buildRequest("GET", URI, params...)
+func (c *Client) publicGet(target interface{}, uri string, params ...func(url.Values)) error {
+	req, _ := c.buildRequest("GET", uri, params...)
 
 	return c.doRequest(target, req)
 }
 
-func (c *Client) marketGet(target interface{}, URI string, params ...func(url.Values)) error {
+func (c *Client) marketGet(target interface{}, uri string, params ...func(url.Values)) error {
 	if c.apiKey == "" {
 		return errors.New("no API key set")
 	}
 
-	req, _ := c.buildRequest("GET", URI, params...)
+	req, _ := c.buildRequest("GET", uri, params...)
 
 	req.Header.Add("X-MBX-APIKEY", c.apiKey)
 
 	return c.doRequest(target, req)
 }
 
-func (c *Client) signedCall(target interface{}, method string, URI string, params ...func(url.Values)) error {
+func (c *Client) signedCall(target interface{}, method string, uri string, params ...func(url.Values)) error {
 	if c.apiSecret == "" {
 		return errors.New("no API secret set")
 	}
@@ -185,7 +185,7 @@ func (c *Client) signedCall(target interface{}, method string, URI string, param
 
 	params = append(params, param("timestamp", timestamp))
 
-	req, _ := c.buildRequest("GET", URI, params...)
+	req, _ := c.buildRequest(method, uri, params...)
 
 	// Add a signature to the request. It will be safe to simply add it here
 	// using '&', since timestamp will always be set and we will never

@@ -10,7 +10,8 @@ import (
 func signString(in string, key string) string {
 	mac := hmac.New(sha256.New, []byte(key))
 
-	mac.Write([]byte(in))
+	// This should never fail. Famous last words.
+	_, _ = mac.Write([]byte(in))
 
 	return fmt.Sprintf("%x", (mac.Sum(nil)))
 }

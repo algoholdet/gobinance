@@ -34,7 +34,7 @@ func (s *TradeStream) Read() (*Trade, error) {
 // You can use the Read() method when reading from the stream. You should call
 // Close() when done.
 func (c *Client) TradeStream(symbol Symbol) (*TradeStream, error) {
-	URL := fmt.Sprintf("%s/ws/%s@trade", c.streamBaseURL, string(symbol.LowerCase()))
+	URL := fmt.Sprintf("%s/ws/%s@trade", c.streamBaseURL, symbol.LowerCase())
 
 	conn, err := websocket.Dial(URL, "", "http://localhost/")
 	if err != nil {
