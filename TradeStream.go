@@ -2,6 +2,7 @@ package binance
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"golang.org/x/net/websocket"
 )
@@ -27,4 +28,22 @@ func (s *TradeStream) Read() (*Trade, error) {
 	}
 
 	return trade, nil
+}
+
+// TradeStream will open a websocket stream that will stream trades for symbol.
+// You can use the Read() method when reading from the stream. You should call
+// Close() when done.
+func (c *Client) TradeStream(symbol Symbol) (*TradeStream, error) {
+	URL := fmt.Sprintf("%s/ws/%s@trade", c.streamBaseURL, string(symbol.LowerCase()))
+
+	conn, err := websocket.Dial(URL, "", "http://localhost/")
+	if err != nil {
+		return nil, err
+	}
+
+	stream := &TradeStream{
+		Conn: conn,
+	}
+
+	return stream, nil
 }

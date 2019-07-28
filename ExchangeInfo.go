@@ -8,3 +8,12 @@ type ExchangeInfo struct {
 	Symbols    []SymbolInfo `json:"symbols"`
 	//ExchangeFilters []json.RawMessage `json:"exchangeFilters"` // FIXME: What is this?
 }
+
+// ExchangeInfo returns current exchange trading rules and symbol information.
+func (c *Client) ExchangeInfo() (*ExchangeInfo, error) {
+	info := &ExchangeInfo{}
+
+	err := c.publicGet(info, "/api/v1/exchangeInfo")
+
+	return info, err
+}

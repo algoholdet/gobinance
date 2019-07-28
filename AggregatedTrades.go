@@ -46,3 +46,16 @@ func (t *AggregatedTrades) ColorString(previous *AggregatedTrades) string {
 
 	return ret
 }
+
+// AggregateTrades will return aggregated historic trades for symbol. You can
+// query using FromID(), StartTime(), EndTime() and Limit().
+func (c *Client) AggregateTrades(symbol Symbol, options ...QueryFunc) ([]AggregatedTrades, error) {
+	var aggTrades []AggregatedTrades
+
+	err := c.publicGet(&aggTrades, "/api/v1/aggTrades",
+		param("symbol", symbol.UpperCase()),
+		newQuery(options).params(),
+	)
+
+	return aggTrades, err
+}

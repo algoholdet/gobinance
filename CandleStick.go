@@ -50,3 +50,31 @@ func (p candleStickProxy) real() (*CandleStick, error) {
 
 	return &candleStick, nil
 }
+
+// CandleStick returns Kline/candlestick bars for symbol. Klines are uniquely
+// identified by their open time. You can refine the query with Limit(),
+// StartTime() and EndTime().
+func (c *Client) CandleStick(symbol Symbol, interval string, options ...QueryFunc) ([]CandleStick, error) {
+	var proxy []candleStickProxy
+
+	err := c.publicGet(&proxy, "/api/v1/klines",
+		param("symbol", symbol.UpperCase()),
+		param("interval", interval),
+		newQuery(options).params(),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	sticks := make([]CandleStick, len(proxy), len(proxy))
+	for i, p := range proxy {
+		stick, err := p.real()
+		if err != nil {
+			return nil, err
+		}
+
+		sticks[i] = *stick
+	}
+
+	return sticks, nil
+}

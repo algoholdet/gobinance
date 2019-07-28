@@ -66,3 +66,18 @@ func (p *orderBookProxy) real() (*OrderBook, error) {
 
 	return orderbook, nil
 }
+
+// OrderBook will return the current order book for symbol.
+func (c *Client) OrderBook(symbol Symbol, limit int) (*OrderBook, error) {
+	proxy := &orderBookProxy{}
+
+	err := c.publicGet(proxy, "/api/v1/depth",
+		param("symbol", symbol.UpperCase()),
+		param("limit", limit),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return proxy.real()
+}

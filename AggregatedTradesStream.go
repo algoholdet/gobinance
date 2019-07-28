@@ -2,6 +2,7 @@ package binance
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"golang.org/x/net/websocket"
 )
@@ -27,4 +28,22 @@ func (s *AggregatedTradesStream) Read() (*AggregatedTrades, error) {
 	}
 
 	return trade, nil
+}
+
+// AggregatedTradesStream will open a websocket stream that will stream
+// aggregated trades for symbol. You can use the Read() method when reading
+// from the stream. You should call Close() when done.
+func (c *Client) AggregatedTradesStream(symbol Symbol) (*AggregatedTradesStream, error) {
+	URL := fmt.Sprintf("%s/ws/%s@aggTrade", c.streamBaseURL, string(symbol.LowerCase()))
+
+	conn, err := websocket.Dial(URL, "", "http://localhost/")
+	if err != nil {
+		return nil, err
+	}
+
+	stream := &AggregatedTradesStream{
+		Conn: conn,
+	}
+
+	return stream, nil
 }

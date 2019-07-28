@@ -48,3 +48,19 @@ func combinedEvent(data []byte) (interface{}, error) {
 
 	return target, nil
 }
+
+// CombinedStream will open a websocket stream for multiple events.
+func (c *Client) CombinedStream(streams []StreamID) (*CombinedStream, error) {
+	URL := fmt.Sprintf("%s/stream?streams=%s", c.streamBaseURL, joinStreamID(streams))
+
+	conn, err := websocket.Dial(URL, "", "http://localhost/")
+	if err != nil {
+		return nil, err
+	}
+
+	stream := &CombinedStream{
+		Conn: conn,
+	}
+
+	return stream, nil
+}
