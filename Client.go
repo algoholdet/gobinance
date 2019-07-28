@@ -79,11 +79,16 @@ func NewClient(options ...func(*Client)) (*Client, error) {
 		client:        http.DefaultClient,
 	}
 
-	for _, option := range options {
-		option(client)
-	}
+	client.SetOptions(options...)
 
 	return client, nil
+}
+
+// SetOptions can be used to set various options on Client.
+func (c *Client) SetOptions(options ...func(*Client)) {
+	for _, option := range options {
+		option(c)
+	}
 }
 
 func param(key string, value interface{}) func(url.Values) {
