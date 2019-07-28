@@ -16,7 +16,7 @@ type CandleStick struct {
 	QuoteAssetVolume         Value `json:"quoteAssetVolume"`
 	NumberOfTrades           int   `json:"numberOfTrades"`
 	TakerBuyBaseAssetVolume  Value `json:"takerBuyBaseAssetVolume"`
-	TakerBuyQuoteAssetVolume Value `json:"takerBuyBaseAssetVolume"`
+	TakerBuyQuoteAssetVolume Value `json:"takerBuyQuoteAssetVolume"`
 }
 
 // candleStickProxy is used for unmarshalling JSON from the API. We have to use

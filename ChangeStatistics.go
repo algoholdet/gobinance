@@ -2,25 +2,25 @@ package binance
 
 // ChangeStatistics describes a change to a symbol.
 type ChangeStatistics struct {
-	Symbol                Symbol `jsoin:"symbol"`
-	PriceChange           Value  `jsoin:"priceChange"`
-	PriceChangePercent    Value  `jsoin:"priceChangePercent"`
-	WeightedAveragegPrice Value  `jsoin:"weightedAvgPrice"`
-	PreviousClosePrice    Value  `jsoin:"prevClosePrice"`
-	LastPrice             Value  `jsoin:"lastPrice"`
-	LastQuantity          Value  `jsoin:"lastQty"`
-	BidPrice              Value  `jsoin:"bidPrice"`
-	AskPrice              Value  `jsoin:"askPrice"`
-	PpenPrice             Value  `jsoin:"openPrice"`
-	HighPrice             Value  `jsoin:"highPrice"`
-	LowPrice              Value  `jsoin:"lowPrice"`
-	Volume                Value  `jsoin:"volume"`
-	QuoteVolume           Value  `jsoin:"quoteVolume"`
-	OpenTime              Time   `jsoin:"openTime"`
-	CloseTime             Time   `jsoin:"closeTime"`
-	FirstTradeID          int64  `jsoin:"firstId"`
-	LastTradeID           int64  `jsoin:"lastId"`
-	NumberOfTrades        int    `jsoin:"count"`
+	Symbol                Symbol `json:"symbol"`
+	PriceChange           Value  `json:"priceChange"`
+	PriceChangePercent    Value  `json:"priceChangePercent"`
+	WeightedAveragegPrice Value  `json:"weightedAvgPrice"`
+	PreviousClosePrice    Value  `json:"prevClosePrice"`
+	LastPrice             Value  `json:"lastPrice"`
+	LastQuantity          Value  `json:"lastQty"`
+	BidPrice              Value  `json:"bidPrice"`
+	AskPrice              Value  `json:"askPrice"`
+	PpenPrice             Value  `json:"openPrice"`
+	HighPrice             Value  `json:"highPrice"`
+	LowPrice              Value  `json:"lowPrice"`
+	Volume                Value  `json:"volume"`
+	QuoteVolume           Value  `json:"quoteVolume"`
+	OpenTime              Time   `json:"openTime"`
+	CloseTime             Time   `json:"closeTime"`
+	FirstTradeID          int64  `json:"firstId"`
+	LastTradeID           int64  `json:"lastId"`
+	NumberOfTrades        int    `json:"count"`
 }
 
 // ChangeStatisticsAll returns 24 hour price change statistics for all symbols.

@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// Time is a type that matches Binance's milliseonc precision timestamps. It's
+// Time is a type that matches Binance's millisecond precision timestamps. It's
 // embedding time.Time so all the usual time.Time methods should work as
 // expected.
 type Time struct {
