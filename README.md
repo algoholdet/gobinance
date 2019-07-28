@@ -1,4 +1,4 @@
-# `import "github.com/abrander/algoholdet/binance"`
+# `import "github.com/algoholdet/gobinance"`
 
 This package provides access to the [Binance](https://binance.com/) [API](https://github.com/binance-exchange/binance-official-api-docs).
 
