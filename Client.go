@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"os"
 	"strconv"
 	"time"
 )
@@ -36,6 +37,23 @@ func APIKey(apiKey string) func(*Client) {
 func APISecret(apiSecret string) func(*Client) {
 	return func(c *Client) {
 		c.apiSecret = apiSecret
+	}
+}
+
+// FromEnvironment will read the keys BINANCE_KEY and BINANCE_SECRET (if
+// set) from the environment and use them as credentials.
+func FromEnvironment() func(*Client) {
+	key := os.Getenv("BINANCE_KEY")
+	secret := os.Getenv("BINANCE_SECRET")
+
+	return func(c *Client) {
+		if key != "" {
+			c.apiKey = key
+		}
+
+		if secret != "" {
+			c.apiSecret = secret
+		}
 	}
 }
 
