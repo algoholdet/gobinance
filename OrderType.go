@@ -13,7 +13,9 @@ const (
 	OrderTypeLimit           OrderType = "LIMIT"
 	OrderTypeLimitMaker      OrderType = "LIMIT_MAKER"
 	OrderTypeMarket          OrderType = "MARKET"
+	OrderTypeStopLoss        OrderType = "STOP_LOSS"
 	OrderTypeStopLossLimit   OrderType = "STOP_LOSS_LIMIT"
+	OrderTypeTakeProfit      OrderType = "TAKE_PROFIT"
 	OrderTypeTakeProfitLimit OrderType = "TAKE_PROFIT_LIMIT"
 )
 
@@ -29,7 +31,14 @@ func (o *OrderType) UnmarshalJSON(data []byte) error {
 	order := OrderType(s)
 
 	switch order {
-	case OrderTypeLimit, OrderTypeLimitMaker, OrderTypeMarket, OrderTypeStopLossLimit, OrderTypeTakeProfitLimit:
+	case
+		OrderTypeLimit,
+		OrderTypeLimitMaker,
+		OrderTypeMarket,
+		OrderTypeStopLoss,
+		OrderTypeStopLossLimit,
+		OrderTypeTakeProfit,
+		OrderTypeTakeProfitLimit:
 		*o = order
 	default:
 		return fmt.Errorf("%s is not a valid order type", s)
