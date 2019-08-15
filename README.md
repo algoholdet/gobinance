@@ -21,12 +21,12 @@ This package provides access to the [Binance](https://binance.com/) [API](https:
 | GET /api/v1/ticker/allPrices      | Public   | ?      |
 | GET /api/v1/ticker/allBookTickers | Public   | ?      |
 | POST /api/v1/order                | Signed   | ×      |
-| POST /api/v3/order                | Signed   |        |
-| POST /api/v3/order/test           | Signed   |        |
-| GET /api/v3/order                 | Signed   |        |
-| DELETE /api/v3/order              | Signed   |        |
-| GET /api/v3/openOrders            | Signed   |        |
-| GET /api/v3/allOrders             | Signed   |        |
+| POST /api/v3/order                | Signed   | ✓      |
+| POST /api/v3/order/test           | Signed   | ✓      |
+| GET /api/v3/order                 | Signed   | ✓      |
+| DELETE /api/v3/order              | Signed   | ✓      |
+| GET /api/v3/openOrders            | Signed   | ✓      |
+| GET /api/v3/allOrders             | Signed   | ✓      |
 | POST /api/v3/order/oco            | Signed   |        |
 | DELETE /api/v3/orderList          | Signed   |        |
 | GET /api/v3/orderList             | Signed   |        |

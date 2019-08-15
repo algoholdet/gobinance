@@ -8,6 +8,8 @@ import (
 // rounding errors.
 type Value string
 
+const zeroValue Value = ""
+
 // Float64 returns the value as a float64.
 func (v Value) Float64() float64 {
 	f, _ := strconv.ParseFloat(string(v), 64)

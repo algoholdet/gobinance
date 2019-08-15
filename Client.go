@@ -118,6 +118,16 @@ func param(key string, value interface{}) func(url.Values) {
 			v.Add(key, strconv.Itoa(t))
 		case int64:
 			v.Add(key, strconv.FormatInt(t, 10))
+		case Symbol:
+			v.Add(key, string(t))
+		case OrderSide:
+			v.Add(key, string(t))
+		case OrderType:
+			v.Add(key, string(t))
+		case Value:
+			v.Add(key, string(t))
+		case TimeInForce:
+			v.Add(key, string(t))
 		default:
 			panic(fmt.Sprintf("unsupported value type: %T", value))
 		}

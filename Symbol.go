@@ -7,6 +7,8 @@ import (
 // Symbol it a trading pair. For example "BTCUSDT". This is not case-sensitive.
 type Symbol string
 
+const zeroSymbol Symbol = ""
+
 // UpperCase will return s in uppercase. For some reason some endpoints
 // require the symbol in uppercase.
 func (s Symbol) UpperCase() string {
