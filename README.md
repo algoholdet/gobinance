@@ -32,7 +32,7 @@ This package provides access to the [Binance](https://binance.com/) [API](https:
 | GET /api/v3/orderList             | Signed   |        |
 | GET /api/v3/allOrderList          | Signed   |        |
 | GET /api/v3/openOrderList         | Signed   |        |
-| GET /api/v3/account               | Signed   |        |
+| GET /api/v3/account               | Signed   | ✓      |
 | GET /api/v3/myTrades              | Signed   | ✓      |
 | POST /wapi/v3/withdraw.html       | Signed   |        |
 | GET /wapi/v3/depositHistory.html  | Signed   |        |
